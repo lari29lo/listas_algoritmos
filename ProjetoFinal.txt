@@ -1,0 +1,487 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<stdbool.h>
+#include<ctype.h>
+#include<time.h>
+#include<unistd.h>
+#include<locale.h>
+
+int main(){
+    // setlocale(LC_ALL, "Portuguese");
+	
+	
+int Menu, quantdd_Pessoas, i=0, opcao_edita; 
+char nome[1000][45], email[1000][45], sexo[1000][45], endereco[1000][45], vacina, email_busca[40];
+char backup_nome[1000][45], backup_email[1000][45], backup_endereco[1000][45], backup_sexo[1000][45] ; // variaveis envolvidas no backup
+double altura[1000], backup_altura[1000];
+int cadastro_id[1000], Id, qtd_cadastro=0, exists=-1, backup_qtd_cadastro, backup_cadastro_id[1000];// variaveis do cadastro
+bool vacinado[1000], backup_vacinado[1000]; // variaveis de vacina 
+
+memset(cadastro_id,0,1000);
+
+ int opcao;        
+
+    do{
+        system("cls");  	
+
+        printf("+-----------------------------------------------+\n");
+        printf("|             BEM VINDO AO MENU                 |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|         SELECIONE A OPCÃO DESEJADA            |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| INCLUIR USUARIO [MAX 1000]      ||   [1]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| EDITAR DADOS DE UM USUARIO      ||   [2]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| EXCLUIR USUARIO                 ||   [3]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| BUSCAR USUARIO [PELO E-MAIL]    ||   [4]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| IMPRIMIR USUARIOS CADASTRADOS   ||   [5]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| MENU BACKUP                     ||   [6]      |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| SAIR DO PROGRAMA                ||   [7]      |\n");
+        printf("+-----------------------------------------------+\n");
+        scanf("%i", &Menu);
+        system("cls");  	  
+
+    
+    	switch (Menu){
+    	
+        case 1://CADASTRA
+        	
+        printf("Digite a quantidade de usuarios que deseja cadastrar [MAX: 1000]:\n");
+        do
+		{
+                scanf("%d", &quantdd_Pessoas);
+                
+                if (quantdd_Pessoas < 0 || quantdd_Pessoas > 1000 || quantdd_Pessoas+qtd_cadastro > 1000)
+                    printf("Limite de usuarios exedido, digite novamente:\n");
+                
+        } while (quantdd_Pessoas < 0 || quantdd_Pessoas > 1000 || quantdd_Pessoas+qtd_cadastro > 1000);
+            system("cls");
+            for (int qtd = 0; qtd < quantdd_Pessoas; qtd++){
+                do
+                {
+                    srand(time(0));
+                    Id = rand() % 1000;
+                } while (cadastro_id[Id] != 0);
+                    
+                    cadastro_id[Id]=1;
+                    
+                    printf("Digite o nome do usuario ID [%i]: \n", Id);//nome e validacao
+                do
+                {
+                    
+                    scanf(" %[^\n]", nome[Id]);  
+                    if (strlen(nome[Id]) < 2)
+                    {
+                        printf("Nome Informado invalido, por favor Digite um nome Valido: \n");
+                    }    
+                } while (strlen(nome[Id]) < 2);
+                
+            
+                    printf("Digite o E-mail do usuario ID [%i]: \n", Id);//Email
+                do
+                {
+
+                    scanf("%s", email[Id]);
+                    if (strchr(email[Id], '@')==0)
+                    {
+                        printf("Endereco E-mail fornecido sem o caracter [@], por favor, digite um Email valido:\n");
+                    }
+                } while (strchr(email[Id], '@')==0);
+                        
+
+                //Validacao Sexo
+                printf("+---------------------------------------+\n");
+                printf("|       Digite o sexo por extenso       |\n");
+                printf("|  Masculino / Feminino  /Nao declarar  |\n");
+                printf("+---------------------------------------+\n");
+                printf("Digite o Sexo do usuario ID [%i]: \n", Id);
+                
+                do
+                {
+                    scanf(" %[^\n]", sexo[Id]);
+
+                    if (strcmp(sexo[Id], "Masculino")!=0 && strcmp(sexo[Id], "Feminino")!=0  && strcmp(sexo[Id], "Nao declarar")!=0)
+                    {
+                        printf("%s", sexo[Id]);
+                        printf("Escolha do sexo Incorreta, por favor respeite as orientacoes!\n");
+                        printf("         Masculino / Feminino  / Nao declarar                \n");
+                    }  
+                } while (strcmp(sexo[Id], "Masculino")!=0 && strcmp(sexo[Id], "Feminino")!=0  && strcmp(sexo[Id], "Nao declarar")!=0);
+                                
+            
+                printf("Digite o Endereco do usuario ID [%i]\n", Id);//Endereco
+                do
+                {
+                    scanf(" %[^\n]", endereco[Id]); // Vamos dizer para a scanf() parar de pegar nossa string somente quando encontrar um caractere de NEW LINE (um enter). Para isso, usamos o operador: [^\n]
+                    if (strlen(endereco[Id]) < 3)
+                    {
+                        printf("Endereco Informado Muito Curto, por favor Digite um Endereco Valido: \n");
+                    }
+                    
+                } while (strlen(endereco[Id]) < 3);           
+
+                printf("Digite a altura do usuario ID [%i]\n", Id);//Altura
+                do
+                {
+                    scanf("%lf", &altura[Id]);
+                    if (altura[Id] < 1 || altura[Id] > 2 )
+                        {
+                            printf("+----------------------------------------------------+\n");
+                            printf("|Limite de altura!, por favor respeite as orientacoes|\n");
+                            printf("|             [Max 2 Metro/ Min 1 Metro]             |\n");
+                            printf("|             Digite a altura novamente:             |\n");
+                            printf("+----------------------------------------------------+\n");
+
+                        }
+                } while (altura[Id] < 1 || altura[Id] > 2);
+                                
+
+                printf("Usuario ja foi Vacinado? [S/N] \n");//Vacinacao
+                do
+                {
+                    scanf("%s", &vacina);
+                    vacina=toupper(vacina);
+                    if (vacina != 'S' && vacina != 'N')
+                    {
+                    printf("Digite apenas os caracteres [S/N]\n");
+                    printf(" Informe a vacinacao Novamente: \n");
+                    }
+                } while (vacina != 'S' && vacina != 'N');
+
+                if (vacina == 'S')
+                    vacinado[Id]=1;
+                if (vacina == 'N')
+                    vacinado[Id]=0;
+                qtd_cadastro++;
+
+                system("cls");  
+
+            }
+                       
+    	break;
+
+        case 2: // editar
+        //ADICIONAR ITENS A SEREM EDITADOS
+    do{
+        printf("|            BEM VINDO AO MENU EDITA            |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        SELECIONE O DADO DESEJA EDITAR         |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        NOME                ||        [01]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        E-MAIL              ||        [02]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        SEXO                ||        [03]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        ENDERECO            ||        [04]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        ALTURA              ||        [05]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        VACINADO            ||        [06]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        ID/MATRICULA        ||        [07]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("|        TODOS OS DADOS      ||        [08]     |\n");
+        printf("+-----------------------------------------------+\n");
+        printf("| RETORNAR AO MENU PRINCIPAL ||        [09]     |\n");
+        printf("+-----------------------------------------------+\n");
+        scanf("%i", &opcao_edita);
+        fflush(stdin);
+
+        switch (opcao_edita){
+
+        case 1:
+
+            printf("digite o ID do usuario que deseja editar o nome: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este ID!");
+            } else {
+                printf("Digite o novo nome:\n"); 
+                scanf(" %[^\n]", nome[Id]);
+                printf("Nome editado com sucesso"); 
+            }
+
+            sleep(5); // espera um valor inteiro positivo que representa a quantidade milissegundos que é necessário esperar.
+            break;  
+
+        case 2:
+
+            printf("digite o ID do usuario que deseja editar o email: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este Id!");
+            } else {
+                printf("Digite o novo email:\n"); 
+                do
+                {
+                    scanf("%s", email[Id]);
+                    if (strchr(email[Id], '@')==0)
+                    {
+                        printf("Endereco E-mail fornecido sem o caracter [@], por favor, digite um Email valido:\n");
+                    }
+                } while (strchr(email[Id], '@')==0);
+                printf("Email editado com sucesso!");
+            }
+            sleep(5);
+            break;
+            
+        // valida editar sexo
+        case 3: 
+            printf("digite o ID do usuario que deseja editar o sexo: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este Id!");
+            } else {
+                printf("Declare a nova opção de sexo:\n"); 
+                do
+                {
+                    scanf(" %[^\n]", sexo[Id]);
+
+                    if (strcmp(sexo[Id], "Masculino")!=0 && strcmp(sexo[Id], "Feminino")!=0  && strcmp(sexo[Id], "Nao declarar")!=0)
+                    {
+                        printf("%s", sexo[Id]);
+                        printf("Escolha do sexo Incorreta, por favor respeite as orientacoes!\n");
+                        printf("         Masculino / Feminino  / Nao declarar                \n");
+                    }  
+                } while (strcmp(sexo[Id], "Masculino")!=0 && strcmp(sexo[Id], "Feminino")!=0  && strcmp(sexo[Id], "Nao declarar")!=0);
+                printf("Sexo editado com sucesso!");
+            } 
+            sleep(5);
+            break;
+        case 4: 
+            printf("digite o ID do usuario que deseja editar o endereço: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este Id!");
+            } else {
+                printf("Digite o novo email:\n"); 
+                scanf(" %[^\n]", endereco[Id]);
+                printf("Endereço editado com sucesso"); 
+            } 
+            sleep(5);
+
+            break;
+        case 5:
+            printf("digite o ID do usuario que deseja editar a altura: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este Id!");
+            } else
+                do {
+                    printf("Digite a nova altura:\n");
+                    scanf(" %[^\n]", altura[Id]);
+                    if (altura[Id] < 1 || altura[Id] > 2 ){
+                        printf("Limite de altura!, por favor respeite as orientacoes\n");
+                        printf("             [Max 2 Metro/ Min 1 Metro]     \n");
+                        printf("             Digite a altura novamente:     \n");
+                    }
+                    printf("Altura editada com sucesso\n"); 
+
+                } while (altura[Id] < 1 || altura[Id] > 2 );
+
+            sleep(5);
+            break;
+
+        case 6:
+            printf("digite o ID do usuario que deseja editar o endereço: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este Id!");
+            } else 
+                do{
+                 scanf("%s", &vacina);
+                    vacina=toupper(vacina);
+                    if (vacina != 'S' && vacina != 'N')
+                    {
+                    printf("Digite apenas os caracteres [S/N]\n");
+                    printf(" Informe a vacinacao Novamente: \n");
+                    
+                    }
+                } while (vacina != 'S' && vacina != 'N');
+
+                if (vacina == 'S')
+                    vacinado[Id]=1;
+                if (vacina == 'N')
+                    vacinado[Id]=0;
+
+            sleep(5);
+
+        	break;
+        case 7:
+
+
+            break;
+
+        case 8:
+
+
+            break;
+
+        case 9:
+            printf("\n## Retornando ao [MENU PRINCIPAL] ##\n");
+            sleep(1);
+            system("cls");
+            
+            break;
+        
+        }
+        system("cls");
+
+        } while (opcao_edita != 9);
+
+        if(opcao_edita==9) // se nao colocar essa condição, nao retorna para o menu principal
+        break;
+
+        case 3: // EXCLUIR USUARIO
+        // TERMINAR DE EXLUIR DADOS DOS OUTROS VETORES
+            printf("digite um ID: ");
+            scanf("%d", &Id);
+            if(cadastro_id[Id]==0){
+                printf("Não existe cadastro com este ID!");
+            } else {
+                cadastro_id[Id] = 0;
+                strcpy(nome[Id], "");
+                qtd_cadastro--;
+                printf("Cadastro exluido"); 
+            }
+            sleep(5);
+            break;
+
+        case 4:  // BUSCAR PELO EMAIL
+       //ADICIONAR ITENS AO PRINT
+      printf("Digite o E-mail do usuario para realizar a busca: ");//Email
+                do
+                {
+                    scanf("%s",email_busca);
+                    if (strchr(email_busca, '@')==0)
+                        printf("Endereco E-mail fornecido sem o caracter [@], por favor, digite um Email valido:\n");
+                    
+                } while (strchr(email_busca, '@')==0);
+                
+                for (int i = 0; i < 1000; i++)
+                    if (strcmp(email_busca, email[i])==0){
+                        exists = i;
+                        break;
+                    }
+                
+                    if(exists!=-1){
+                        printf("\nId: %d", exists);
+                        printf("\nNome: %s", nome[exists]);
+                        printf("Sexo: %s\n", sexo[exists]);
+                        printf("Email: %s\n", email[exists]);
+                        printf("Endereço: %s\n", endereco[exists]);
+                        printf("Altura: %.2lf\n", altura[exists]);
+
+                        if (vacinado[i] == (true))
+                        {
+                        printf("|      USUARIO VACINADO        |\n");
+                        }else if (vacinado[i] == (false))
+                        {
+                        printf("|    USUARIO NAO VACINADO      |\n");
+                        }
+                        printf("\n\n");
+
+                        exists=-1;
+                    }else 
+                        printf("cadastro não encontrado");
+
+                    sleep(5); 
+            break;
+        case 5:
+        //ADICIONAR ITENS NA HORA DO PRINT
+        if (qtd_cadastro == 0)
+            printf("O sistema não possui cadastros");
+        else 
+            for (int i = 0; i < 1000; i++)
+            {
+                if(cadastro_id[i]==1){
+                    printf("\nId: %d\n", i);
+                    printf("Nome: %s\n", nome[i]);
+                    printf("Email: %s\n", email[i]);
+                    printf("Sexo: %s\n", sexo[i]);
+                    printf("Endereço: %s\n", endereco[i]);
+                    printf("Altura: %.2lf\n", altura[i]);
+
+                    if (vacinado[i] == (true)){
+                        printf("+--------------------------------+\n");
+                        printf("|        USUARIO VACINADO        |\n");
+                        printf("+--------------------------------+\n");
+                    }else if (vacinado[i] == (false)){
+                        printf("+--------------------------------+\n");
+                        printf("|       USUARIO NAO VACINADO     |\n");
+                        printf("+--------------------------------+\n");
+                }
+                }
+            }
+            sleep(7);
+        system("cls");  
+            break;
+        case 6://backup 
+        // VALIDAR
+        // ADICIONAR BACKUP DE OUTROS VETORES
+       
+        printf("Escolha o que deseja ser feito:\n[1] Realizar backup [2]Mostrar ultimo backup: ");
+        scanf("%d", &opcao);
+        switch (opcao)
+        {
+        case 1:
+        for (int i = 0; i < 1000; i++)
+        {
+            strcpy(backup_nome[i], nome[i]);
+            strcpy(backup_email[i], email[i]);
+            strcpy(backup_sexo[i], sexo[i]);
+            backup_altura[i] = altura[i];
+            backup_vacinado[i] = vacinado[i];
+
+            backup_cadastro_id[i] = cadastro_id[i];
+        }
+        backup_qtd_cadastro = qtd_cadastro;
+            break;
+        case 2:
+         if (backup_qtd_cadastro == 0)
+            printf("O sistema não possui cadastros");
+        else 
+            for (int i = 0; i < 1000; i++)
+            {
+                if(backup_cadastro_id[i]==1){
+                    printf("\nId: %d\n", i);
+                    printf("Nome: %s\n", nome[i]);
+                    printf("Email: %s\n", email[i]);
+                    printf("Endereço: %s\n", endereco[i]);
+                    printf("Altura: %.2lf\n", altura[i]);
+
+                    if (vacinado[i] == (true))
+                    {
+                    printf("|      USUARIO VACINADO        |\n");
+                    }else if (vacinado[i] == (false))
+                    {
+                    printf("|    USUARIO NAO VACINADO      |\n");
+                    }
+                    printf("\n\n");
+                }
+            }
+            sleep(5);
+        system("cls");  
+        
+        default: printf("Não foram feito backups ainda");
+            break;
+        }      
+            break;
+        case 7://sair 
+            break;
+        default: printf("Essa opção nao existe, volte ao menu!\n");
+        	break;
+        }
+
+    } while (Menu != 7);
+    
+    return 0; 
+}
+
